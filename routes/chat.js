@@ -1,4 +1,5 @@
 var socketio = require('socket.io');
+var sqraper = require('sqraper');
 
 var count = {};
 var rooms = [];
@@ -27,6 +28,19 @@ exports.chat = function(req, res) {
         }
         log[room].push(data);
         chat.emit('new message', data);
+
+        var text = data.text;
+        var found_array = text.match(/https?:\/\/\S+/g);
+        if (found_array) {
+          found_array.forEach(function(found) {
+            sqraper(found, function(err, $) {
+              var title = $('title').text().trim();
+              var bot_data = { name: 'bot', text: title };
+              log[room].push(bot_data);
+              chat.emit('new message', bot_data);
+            });
+          });
+        }
       });
       socket.on('disconnect', function() {
         count[room] -= 1;
