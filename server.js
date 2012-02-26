@@ -31,21 +31,9 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', routes.index);
+app.get('/:room', routes.chat);
 
 app.listen(3000);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
-
-// Visitor Counter
-var io = socketio.listen(app);
-var count = 0;
-io.sockets.on('connection', function(socket) {
-  //connect
-  count++;
-  io.sockets.emit('count change', count);
-  socket.on('disconnect', function() {
-    //disconnect
-    count--;
-    socket.broadcast.emit('count change', count);
-  });
-});
+module.exports.io = socketio.listen(app);
