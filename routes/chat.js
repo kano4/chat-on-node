@@ -8,14 +8,16 @@ exports.chat = function(req, res) {
 
   if (rooms.indexOf(room) === -1) {
     var io = require('../server').io;
-    io.of('/' + room).on('connection', function(socket) {
+    var chat = io.of('/' + room).on('connection', function(socket) {
       if (count[room]) {
         count[room] += 1;
       } else {
         count[room] = 1;
       }
-      socket.broadcast.emit('count change', count[room]);
-      socket.emit('count change', count[room]);
+      chat.emit('count change', count[room]);
+      socket.on('new message', function(data) {
+        chat.emit('new message', data);
+      });
       socket.on('disconnect', function() {
         count[room] -= 1;
         socket.broadcast.emit('count change', count[room]);

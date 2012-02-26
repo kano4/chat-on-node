@@ -2,3 +2,9 @@ h1= title
 p 現在の閲覧者数 
   span#count
   人
+
+#chat
+form#form(onsubmit='send(); return false;')
+  input#name(type='text', placeholder='Twitter ID')
+  input#text(type='text', placeholder='Message', autocomplete='off')
+  input(type='submit', value='送信')

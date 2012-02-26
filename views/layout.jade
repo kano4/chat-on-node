@@ -8,7 +8,19 @@ html
     script(type='text/javascript')
       var socket = io.connect(window.location);
       socket.on('count change', function(count) {
-        // event
         $('#count').text(count);
       });
+      socket.on('new message', function(data) {
+        var name = data.name;
+        var text = data.text;
+        $('#chat').append('<div>' + name + ': '+ text + '</div>');
+      });
+      function send() {
+        var name = $('#name').val();
+        var text = $('#text').val();
+        if (name && text && name != "Twitter ID" && text != "Message") {
+          socket.emit('new message', {name: name, text: text});
+          $('#text').val('');
+        }
+      };
   body!= body
