@@ -2,6 +2,7 @@ var socketio = require('socket.io');
 
 var count = {};
 var rooms = [];
+var log = {};
 
 exports.chat = function(req, res) {
   var room = req.params.room;
@@ -15,7 +16,16 @@ exports.chat = function(req, res) {
         count[room] = 1;
       }
       chat.emit('count change', count[room]);
+      if (log[room]) {
+        log[room].forEach(function(data) {
+          socket.emit('new message', data)
+        })
+      }
       socket.on('new message', function(data) {
+        if (!log[room]) {
+          log[room] = [];
+        }
+        log[room].push(data);
         chat.emit('new message', data);
       });
       socket.on('disconnect', function() {
