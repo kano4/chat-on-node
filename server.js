@@ -31,9 +31,10 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', routes.index);
+app.get('/about', routes.about);
 app.get('/:room', routes.chat);
 
-app.listen(3000);
+app.listen(80);
 console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 
 module.exports.io = socketio.listen(app);

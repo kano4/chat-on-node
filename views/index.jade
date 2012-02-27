@@ -1,5 +1,13 @@
-h1= title
-p Welcome to #{title}
-p 現在の閲覧者数 
-  span#count
-  人
+!= partial('header')
+.container
+  .content
+    .page-header
+    .hero-unit
+      h1 Chat on Node
+      br
+      p Chat on Node is a simple chat tool written in Node.
+      br
+      p
+        a(href="about", class="btn btn-primary btn-large") Learn more
+
+  footer!= partial('footer')

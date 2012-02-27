@@ -1,10 +1,23 @@
-h1= title
-p 現在の閲覧者数 
-  span#count
-  人
+!= partial('header')
+.container
+  .content
+    .page-header
+    .row
+      p.visitor_counter The current number of visitors 
+        span#count
+      div.span2_5
+        form#form(onsubmit='send(); return false;')
+          input#name(type='text', class='span2_5', placeholder='Twitter ID')
+          input#text(type='text', class='span2_5', placeholder='Message', autocomplete='off')
+          br
+          input(type='submit', value='送信')
 
-#chat
-form#form(onsubmit='send(); return false;')
-  input#name(type='text', placeholder='Twitter ID')
-  input#text(type='text', placeholder='Message', autocomplete='off')
-  input(type='submit', value='送信')
+      div.span6
+        .well
+          #chat
+      div.span3
+        .well
+          p bot
+          #bot
+
+  footer!= partial('footer')

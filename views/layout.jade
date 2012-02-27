@@ -2,9 +2,11 @@
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(type='text/javascript', src='http://code.jquery.com/jquery.min.js')
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/overwrite.css')
     script(type='text/javascript', src='/socket.io/socket.io.js')
+    script(type='text/javascript', src='/javascripts/jquery.min.js')
+    script(type='text/javascript', src='/bootstrap/js/bootstrap.min.js')
     script(type='text/javascript')
       var socket = io.connect(window.location);
       socket.on('count change', function(count) {
@@ -13,7 +15,12 @@ html
       socket.on('new message', function(data) {
         var name = data.name;
         var text = data.text;
-        $('#chat').append('<div>' + name + ': '+ text + '</div>');
+        $('#chat').append('<div><span class="chat_name">' + name + '</span>> '+ text + '</div>');
+      });
+      socket.on('bot message', function(data) {
+        var title = data.title;
+        var url = data.url;
+        $('#bot').append('<div>' + title + "<br />" + url + '</div>');
       });
       function send() {
         var name = $('#name').val();

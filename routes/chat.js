@@ -4,9 +4,12 @@ var sqraper = require('sqraper');
 var count = {};
 var rooms = [];
 var log = {};
+var bot_log = {};
 
 exports.chat = function(req, res) {
   var room = req.params.room;
+
+  if (room != "room1" && room != "room2" && room != "room3") { res.redirect("/"); }
 
   if (rooms.indexOf(room) === -1) {
     var io = require('../server').io;
@@ -22,6 +25,12 @@ exports.chat = function(req, res) {
           socket.emit('new message', data)
         })
       }
+      if (bot_log[room]) {
+        bot_log[room].forEach(function(data) {
+          socket.emit('bot message', data)
+        })
+      }
+
       socket.on('new message', function(data) {
         if (!log[room]) {
           log[room] = [];
@@ -29,15 +38,18 @@ exports.chat = function(req, res) {
         log[room].push(data);
         chat.emit('new message', data);
 
+        if (!bot_log[room]) {
+          bot_log[room] = [];
+        }
         var text = data.text;
-        var found_array = text.match(/https?:\/\/\S+/g);
-        if (found_array) {
-          found_array.forEach(function(found) {
-            sqraper(found, function(err, $) {
+        var urls = text.match(/https?:\/\/\S+/g);
+        if (urls) {
+          urls.forEach(function(url) {
+            sqraper(url, function(err, $) {
               var title = $('title').text().trim();
-              var bot_data = { name: 'bot', text: title };
-              log[room].push(bot_data);
-              chat.emit('new message', bot_data);
+              var bot_data = { name: 'bot', url: url, title: title };
+              bot_log[room].push(bot_data);
+              chat.emit('bot message', bot_data);
             });
           });
         }
